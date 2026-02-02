@@ -1,103 +1,196 @@
-import Image from "next/image";
+import React from "react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  BookOpen,
+  Play,
+  FileQuestion,
+  MessageCircle,
+  Shield,
+  Clock,
+  Award,
+  Users,
+} from "lucide-react";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <header className="border-b border-border bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary">
+                <BookOpen className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-bold text-foreground">
+                EduLearn
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" asChild>
+                <Link href="/auth/login">Sign in</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/auth/sign-up">Get Started</Link>
+              </Button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-20 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight text-balance">
+              Learn at Your Own Pace with Expert Guidance
+            </h1>
+            <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
+              Access quality education with video lessons, interactive quizzes,
+              and direct communication with administrators. Your journey to
+              knowledge starts here.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" asChild>
+                <Link href="/auth/sign-up">
+                  Start Learning Today
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/auth/login">Sign in to Continue</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-card border-y border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-foreground">
+              Everything You Need to Succeed
+            </h2>
+            <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+              Our platform provides all the tools and resources for effective
+              learning.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <FeatureCard
+              icon={Play}
+              title="Video Lessons"
+              description="Watch high-quality video content for each subject at your own pace."
+            />
+            <FeatureCard
+              icon={FileQuestion}
+              title="Interactive Quizzes"
+              description="Test your knowledge with timed quizzes and instant results."
+            />
+            <FeatureCard
+              icon={MessageCircle}
+              title="Direct Support"
+              description="Message administrators directly for help and guidance."
+            />
+            <FeatureCard
+              icon={Shield}
+              title="Secure Platform"
+              description="Your data is protected with enterprise-grade security."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mx-auto mb-4">
+                <Clock className="w-7 h-7 text-primary" />
+              </div>
+              <div className="text-3xl font-bold text-foreground">24/7</div>
+              <div className="text-muted-foreground mt-1">
+                Access to Content
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-accent/20 mx-auto mb-4">
+                <Award className="w-7 h-7 text-accent-foreground" />
+              </div>
+              <div className="text-3xl font-bold text-foreground">100+</div>
+              <div className="text-muted-foreground mt-1">Video Lessons</div>
+            </div>
+            <div>
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mx-auto mb-4">
+                <Users className="w-7 h-7 text-primary" />
+              </div>
+              <div className="text-3xl font-bold text-foreground">1000+</div>
+              <div className="text-muted-foreground mt-1">Happy Students</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-primary">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-primary-foreground">
+            Ready to Start Learning?
+          </h2>
+          <p className="mt-4 text-primary-foreground/80 max-w-2xl mx-auto">
+            Join thousands of students who are already advancing their education
+            with EduLearn.
+          </p>
+          <Button
+            size="lg"
+            variant="secondary"
+            className="mt-8"
+            asChild
+          >
+            <Link href="/auth/sign-up">Create Free Account</Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 bg-card border-t border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
+                <BookOpen className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-semibold text-foreground">EduLearn</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              2026 EduLearn. All rights reserved.
+            </p>
+          </div>
+        </div>
       </footer>
+    </div>
+  );
+}
+
+function FeatureCard({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="text-center">
+      <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mx-auto mb-4">
+        <Icon className="w-6 h-6 text-primary" />
+      </div>
+      <h3 className="font-semibold text-foreground mb-2">{title}</h3>
+      <p className="text-sm text-muted-foreground">{description}</p>
     </div>
   );
 }
