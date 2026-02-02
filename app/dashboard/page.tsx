@@ -35,7 +35,7 @@ export default async function StudentDashboardPage() {
     .order("created_at", { ascending: false })
     .limit(5);
 
-  const subjects = accessibleSubjects?.map((a) => a.subjects).filter(Boolean) || [];
+  const subjects = accessibleSubjects?.map((a) => a.subjects).flat().filter(Boolean) || [];
   const totalVideos = subjects.reduce(
     (acc, s) => acc + (s?.videos?.[0]?.count || 0),
     0
@@ -191,18 +191,16 @@ export default async function StudentDashboardPage() {
                       </div>
                       <div className="text-right">
                         <p
-                          className={`font-bold ${
-                            passed ? "text-green-600" : "text-red-600"
-                          }`}
+                          className={`font-bold ${passed ? "text-green-600" : "text-red-600"
+                            }`}
                         >
                           {attempt.score}%
                         </p>
                         <span
-                          className={`text-xs px-2 py-0.5 rounded-full ${
-                            passed
+                          className={`text-xs px-2 py-0.5 rounded-full ${passed
                               ? "bg-green-100 text-green-700"
                               : "bg-red-100 text-red-700"
-                          }`}
+                            }`}
                         >
                           {passed ? "Passed" : "Failed"}
                         </span>
