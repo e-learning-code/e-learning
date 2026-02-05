@@ -19,12 +19,13 @@ import {
 import { BookOpen, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("ksekkumar1984@gmail.com");
-  const [password, setPassword] = useState("sarmila1990");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+//   const [email, setEmail] = useState("ksekkumar1984@gmail.com");
+ // const [password, setPassword] = useState("sarmila1990");
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
