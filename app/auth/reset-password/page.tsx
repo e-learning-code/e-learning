@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react"
-
-import { useState } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,43 +15,58 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BookOpen, Loader2 } from "lucide-react";
+import { BookOpen, Loader2, Lock } from "lucide-react";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
+export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-//   const [email, setEmail] = useState("ksekkumar1984@gmail.com");
- // const [password, setPassword] = useState("sarmila1990");
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const accessToken = searchParams.get("access_token");
+    const refreshToken = searchParams.get("refresh_token");
+    
+    if (!accessToken || !refreshToken) {
+      setError("Invalid or expired reset link. Please request a new password reset.");
+    }
+  }, [searchParams]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+    setMessage("");
 
-    const supabase = createClient();
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (signInError) {
-      setError(signInError.message);
-      setLoading(false);
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user?.user_metadata?.role === "admin") {
-      router.push("/admin");
-    } else {
-      router.push("/dashboard");
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
     }
+
+    setLoading(true);
+    const supabase = createClient();
+
+    const { error: resetError } = await supabase.auth.updateUser({
+      password: password,
+    });
+
+    if (resetError) {
+      setError(resetError.message);
+    } else {
+      setMessage("Password has been reset successfully. Redirecting to login...");
+      setTimeout(() => {
+        router.push("/auth/login");
+      }, 2000);
+    }
+
+    setLoading(false);
   }
 
   return (
@@ -67,9 +81,9 @@ export default function LoginPage() {
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Welcome back</CardTitle>
+            <CardTitle className="text-2xl">Reset Password</CardTitle>
             <CardDescription>
-              Sign in to your account to continue learning
+              Enter your new password below
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -80,27 +94,35 @@ export default function LoginPage() {
                 </div>
               )}
 
+              {message && (
+                <div className="p-3 text-sm text-green-700 bg-green-50 rounded-lg">
+                  {message}
+                </div>
+              )}
+
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="password">New Password</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="password"
+                  type="password"
+                  placeholder="Enter new password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
+                  minLength={6}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
-                  id="password"
+                  id="confirmPassword"
                   type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   required
+                  minLength={6}
                 />
               </div>
 
@@ -108,30 +130,23 @@ export default function LoginPage() {
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
+                    Resetting...
                   </>
                 ) : (
-                  "Sign in"
+                  <>
+                    <Lock className="mr-2 h-4 w-4" />
+                    Reset Password
+                  </>
                 )}
               </Button>
             </form>
 
             <div className="mt-6 text-center text-sm text-muted-foreground">
               <Link
-                href="/auth/forgot-password"
+                href="/auth/login"
                 className="text-primary hover:underline font-medium"
               >
-                Forgot your password?
-              </Link>
-            </div>
-
-            <div className="mt-4 text-center text-sm text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="text-primary hover:underline font-medium"
-              >
-                Sign up
+                Back to sign in
               </Link>
             </div>
           </CardContent>

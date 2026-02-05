@@ -17,6 +17,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Clock, ChevronLeft, ChevronRight, CheckCircle, Loader2 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { AttemptHistory } from "@/components/attempt-history";
 
 interface Quiz {
   id: string;
@@ -29,19 +32,24 @@ interface Quiz {
 interface Question {
   id: string;
   question_text: string;
-  options: string[];
-  correct_answer: number;
-  order_index: number;
+  option_a: string;
+  option_b: string;
+  option_c: string;
+  option_d: string;
+  correct_answer: string;
+  sort_order: number;
 }
 
 export function QuizTaker({
   quiz,
   questions,
   studentId,
+  currentAttemptNumber = 1,
 }: {
   quiz: Quiz;
   questions: Question[];
   studentId: string;
+  currentAttemptNumber?: number;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -51,6 +59,7 @@ export function QuizTaker({
   const [result, setResult] = useState<{
     score: number;
     passed: boolean;
+    attemptNumber: number;
   } | null>(null);
   const router = useRouter();
 
@@ -64,7 +73,8 @@ export function QuizTaker({
     // Calculate score
     let correct = 0;
     questions.forEach((q) => {
-      if (answers[q.id] === q.correct_answer) {
+      const userAnswer = String.fromCharCode(65 + (answers[q.id] || 0));
+      if (userAnswer === q.correct_answer) {
         correct++;
       }
     });
@@ -73,15 +83,28 @@ export function QuizTaker({
 
     // Save attempt to database
     const supabase = createClient();
+    
+    // Get previous attempts to determine attempt number
+    const { data: previousAttempts } = await supabase
+      .from("quiz_attempts")
+      .select("id")
+      .eq("quiz_id", quiz.id)
+      .eq("student_id", studentId);
+    
+    const attemptNumber = (previousAttempts?.length || 0) + 1;
+    
     await supabase.from("quiz_attempts").insert({
       quiz_id: quiz.id,
       student_id: studentId,
       score,
+      total_marks: 100, // Assuming total marks is always 100
+      passed,
       answers,
       time_taken_seconds: quiz.time_limit_minutes * 60 - timeLeft,
+      attempt_number: attemptNumber,
     });
 
-    setResult({ score, passed });
+    setResult({ score, passed, attemptNumber });
     setSubmitting(false);
   }, [answers, questions, quiz.id, quiz.passing_score, quiz.time_limit_minutes, studentId, timeLeft]);
 
@@ -122,7 +145,7 @@ export function QuizTaker({
   // Result screen
   if (result) {
     return (
-      <div className="max-w-xl mx-auto">
+      <div className="max-w-3xl mx-auto space-y-6">
         <Card className="text-center">
           <CardHeader>
             <div
@@ -154,6 +177,10 @@ export function QuizTaker({
               <p className="text-sm text-muted-foreground mb-2">Quiz Summary</p>
               <div className="space-y-2">
                 <div className="flex justify-between">
+                  <span>Attempt Number:</span>
+                  <span className="font-medium">#{result.attemptNumber}</span>
+                </div>
+                <div className="flex justify-between">
                   <span>Total Questions:</span>
                   <span className="font-medium">{questions.length}</span>
                 </div>
@@ -176,12 +203,18 @@ export function QuizTaker({
               <Button variant="outline" className="flex-1 bg-transparent" asChild>
                 <a href="/dashboard/quizzes">All Quizzes</a>
               </Button>
-              <Button className="flex-1" onClick={() => router.refresh()}>
+              <Button className="flex-1" onClick={() => window.location.reload()}>
                 Try Again
               </Button>
             </div>
           </CardContent>
         </Card>
+
+        <AttemptHistory 
+          quizId={quiz.id} 
+          studentId={studentId} 
+          currentAttempt={result.attemptNumber}
+        />
       </div>
     );
   }
@@ -193,6 +226,7 @@ export function QuizTaker({
         <div>
           <h1 className="text-2xl font-bold text-foreground">{quiz.title}</h1>
           <p className="text-muted-foreground">{quiz.subjects?.name}</p>
+          <p className="text-sm text-muted-foreground mt-1">Attempt #{currentAttemptNumber}</p>
         </div>
         <div
           className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
@@ -230,7 +264,12 @@ export function QuizTaker({
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {currentQuestion.options.map((option, index) => {
+            {[
+              currentQuestion.option_a,
+              currentQuestion.option_b,
+              currentQuestion.option_c,
+              currentQuestion.option_d
+            ].map((option, index: number) => {
               const isSelected = answers[currentQuestion.id] === index;
               return (
                 <button

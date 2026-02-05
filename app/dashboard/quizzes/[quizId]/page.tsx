@@ -40,12 +40,21 @@ export default async function TakeQuizPage({
     redirect("/dashboard/quizzes");
   }
 
+  // Get previous attempts to determine current attempt number
+  const { data: previousAttempts } = await supabase
+    .from("quiz_attempts")
+    .select("id")
+    .eq("quiz_id", quizId)
+    .eq("student_id", user?.id);
+
+  const currentAttemptNumber = (previousAttempts?.length || 0) + 1;
+
   // Get questions
   const { data: questions } = await supabase
     .from("quiz_questions")
     .select("*")
     .eq("quiz_id", quizId)
-    .order("order_index");
+    .order("sort_order");
 
   if (!questions || questions.length === 0) {
     return (
@@ -65,6 +74,7 @@ export default async function TakeQuizPage({
       quiz={quiz}
       questions={questions}
       studentId={user?.id || ""}
+      currentAttemptNumber={currentAttemptNumber}
     />
   );
 }

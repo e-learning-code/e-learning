@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Settings,
   LogOut,
+  BarChart3,
 } from "lucide-react";
 
 const navItems = [
@@ -24,6 +25,7 @@ const navItems = [
   { href: "/admin/students", label: "Students", icon: Users },
   { href: "/admin/videos", label: "Videos", icon: Video },
   { href: "/admin/quizzes", label: "Quizzes", icon: FileQuestion },
+  { href: "/admin/quiz-results", label: "Quiz Results", icon: BarChart3 },
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
   { href: "/admin/messages", label: "Messages", icon: MessageSquare },
   { href: "/admin/settings", label: "Settings", icon: Settings },

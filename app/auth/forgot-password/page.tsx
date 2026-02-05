@@ -1,10 +1,8 @@
 "use client";
 
-import React from "react"
-
+import React from "react";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,43 +14,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BookOpen, Loader2 } from "lucide-react";
+import { BookOpen, Loader2, Mail } from "lucide-react";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-//   const [email, setEmail] = useState("ksekkumar1984@gmail.com");
- // const [password, setPassword] = useState("sarmila1990");
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setMessage("");
     setLoading(true);
 
     const supabase = createClient();
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
     });
 
-    if (signInError) {
-      setError(signInError.message);
-      setLoading(false);
-      return;
-    }
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user?.user_metadata?.role === "admin") {
-      router.push("/admin");
+    if (resetError) {
+      setError(resetError.message);
     } else {
-      router.push("/dashboard");
+      setMessage("Password reset link has been sent to your email. Please check your inbox.");
+      setEmail("");
     }
+
+    setLoading(false);
   }
 
   return (
@@ -67,9 +56,9 @@ export default function LoginPage() {
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Welcome back</CardTitle>
+            <CardTitle className="text-2xl">Forgot Password</CardTitle>
             <CardDescription>
-              Sign in to your account to continue learning
+              Enter your email address and we'll send you a link to reset your password
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -77,6 +66,12 @@ export default function LoginPage() {
               {error && (
                 <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-lg">
                   {error}
+                </div>
+              )}
+
+              {message && (
+                <div className="p-3 text-sm text-green-700 bg-green-50 rounded-lg">
+                  {message}
                 </div>
               )}
 
@@ -92,46 +87,28 @@ export default function LoginPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
+                    Sending...
                   </>
                 ) : (
-                  "Sign in"
+                  <>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Send Reset Link
+                  </>
                 )}
               </Button>
             </form>
 
             <div className="mt-6 text-center text-sm text-muted-foreground">
+              Remember your password?{" "}
               <Link
-                href="/auth/forgot-password"
+                href="/auth/login"
                 className="text-primary hover:underline font-medium"
               >
-                Forgot your password?
-              </Link>
-            </div>
-
-            <div className="mt-4 text-center text-sm text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="text-primary hover:underline font-medium"
-              >
-                Sign up
+                Sign in
               </Link>
             </div>
           </CardContent>
