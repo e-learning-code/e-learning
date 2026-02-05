@@ -10,7 +10,7 @@ export default async function StudentsPage() {
       *,
       student_subject_access (
         subject_id,
-        subjects (name)
+        subjects (title)
       )
     `)
     .eq("role", "student")
@@ -18,9 +18,9 @@ export default async function StudentsPage() {
 
   const { data: subjects } = await supabase
     .from("subjects")
-    .select("id, name")
+    .select("id, title")
     .eq("is_active", true)
-    .order("name");
+    .order("title");
 
   return (
     <div className="space-y-8">

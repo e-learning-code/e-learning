@@ -32,14 +32,15 @@ interface Video {
   title: string;
   description: string | null;
   video_url: string;
+  video_type: string;
   subject_id: string;
-  order_index: number;
+  sort_order: number;
   is_active: boolean;
 }
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
 }
 
 export function EditVideoDialog({
@@ -57,8 +58,9 @@ export function EditVideoDialog({
   const [title, setTitle] = useState(video.title);
   const [description, setDescription] = useState(video.description || "");
   const [videoUrl, setVideoUrl] = useState(video.video_url);
+  const [videoType, setVideoType] = useState(video.video_type || "youtube");
   const [subjectId, setSubjectId] = useState(video.subject_id);
-  const [orderIndex, setOrderIndex] = useState(video.order_index.toString());
+  const [sortOrder, setSortOrder] = useState((video.sort_order || 0).toString());
   const [isActive, setIsActive] = useState(video.is_active);
   const router = useRouter();
 
@@ -74,8 +76,9 @@ export function EditVideoDialog({
         title,
         description: description || null,
         video_url: videoUrl,
+        video_type: videoType,
         subject_id: subjectId,
-        order_index: parseInt(orderIndex) || 1,
+        sort_order: parseInt(sortOrder) || 0,
         is_active: isActive,
         updated_at: new Date().toISOString(),
       })
@@ -106,7 +109,7 @@ export function EditVideoDialog({
               <SelectContent>
                 {subjects.map((subject) => (
                   <SelectItem key={subject.id} value={subject.id}>
-                    {subject.name}
+                    {subject.title}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -133,6 +136,19 @@ export function EditVideoDialog({
             />
           </div>
           <div className="space-y-2">
+            <Label htmlFor="edit-videoType">Video Type</Label>
+            <Select value={videoType} onValueChange={setVideoType} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select video type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="youtube">YouTube</SelectItem>
+                <SelectItem value="uploaded">Uploaded</SelectItem>
+                <SelectItem value="zoom">Zoom</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="edit-videoUrl">Video URL</Label>
             <Input
               id="edit-videoUrl"
@@ -144,14 +160,14 @@ export function EditVideoDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-orderIndex">Order</Label>
+            <Label htmlFor="edit-sortOrder">Sort Order</Label>
             <Input
-              id="edit-orderIndex"
+              id="edit-sortOrder"
               type="number"
-              min="1"
-              placeholder="1"
-              value={orderIndex}
-              onChange={(e) => setOrderIndex(e.target.value)}
+              min="0"
+              placeholder="0"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
             />
           </div>
           <div className="flex items-center justify-between">

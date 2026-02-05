@@ -74,7 +74,7 @@ export default async function StudentQuizzesPage() {
           {quizzes.map((quiz) => {
             const quizAttempts = attemptsByQuiz[quiz.id] || [];
             const bestScore = quizAttempts.length > 0
-              ? Math.max(...quizAttempts.map((a) => a.score))
+              ? Math.max(...quizAttempts.map((a: any) => a.score))
               : null;
             const passed = bestScore !== null && bestScore >= quiz.passing_score;
 

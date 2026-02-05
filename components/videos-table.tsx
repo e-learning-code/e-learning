@@ -39,15 +39,16 @@ interface Video {
   description: string | null;
   video_url: string;
   subject_id: string;
-  order_index: number;
+  sort_order: number;
+  video_type: string;
   is_active: boolean;
   created_at: string;
-  subjects: { name: string } | null;
+  subjects: { title: string } | null;
 }
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
 }
 
 export function VideosTable({
@@ -93,8 +94,9 @@ export function VideosTable({
               <TableHead>Title</TableHead>
               <TableHead>Subject</TableHead>
               <TableHead>Order</TableHead>
+              <TableHead>Type</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
+              <TableHead>Created At</TableHead>
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -113,10 +115,13 @@ export function VideosTable({
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">
-                    {video.subjects?.name || "Unknown"}
+                    {video.subjects?.title || "Unknown"}
                   </Badge>
                 </TableCell>
-                <TableCell>{video.order_index}</TableCell>
+                <TableCell>{video.sort_order}</TableCell>
+                <TableCell>
+                  <Badge variant="outline">{video.video_type}</Badge>
+                </TableCell>
                 <TableCell>
                   <span
                     className={`px-2 py-1 text-xs rounded-full ${

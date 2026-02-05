@@ -17,7 +17,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-interface Profile {
+export interface Profile {
   id: string;
   full_name: string | null;
   email: string;
@@ -32,7 +32,17 @@ const navItems = [
   { href: "/dashboard/profile", label: "Profile", icon: User },
 ];
 
-export function StudentSidebar({ profile }: { profile: Profile | null }) {
+interface StudentSidebarContentProps {
+  profile: Profile | null;
+  className?: string;
+  onLinkClick?: () => void;
+}
+
+export function StudentSidebarContent({
+  profile,
+  className,
+  onLinkClick,
+}: StudentSidebarContentProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -40,6 +50,7 @@ export function StudentSidebar({ profile }: { profile: Profile | null }) {
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/");
+    if (onLinkClick) onLinkClick();
   }
 
   const initials = profile?.full_name
@@ -51,9 +62,13 @@ export function StudentSidebar({ profile }: { profile: Profile | null }) {
     : profile?.email?.[0]?.toUpperCase() || "?";
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-card border-r border-border flex flex-col">
+    <div className={cn("flex flex-col h-full bg-card", className)}>
       <div className="p-6 border-b border-border">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link 
+          href="/dashboard" 
+          className="flex items-center gap-2"
+          onClick={onLinkClick}
+        >
           <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary">
             <BookOpen className="w-5 h-5 text-primary-foreground" />
           </div>
@@ -90,6 +105,7 @@ export function StudentSidebar({ profile }: { profile: Profile | null }) {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onLinkClick}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                 isActive
@@ -114,6 +130,14 @@ export function StudentSidebar({ profile }: { profile: Profile | null }) {
           Sign out
         </Button>
       </div>
+    </div>
+  );
+}
+
+export function StudentSidebar({ profile }: { profile: Profile | null }) {
+  return (
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-card border-r border-border hidden md:flex flex-col z-30">
+      <StudentSidebarContent profile={profile} />
     </aside>
   );
 }

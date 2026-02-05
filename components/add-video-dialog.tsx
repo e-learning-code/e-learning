@@ -30,7 +30,7 @@ import { Plus, Loader2 } from "lucide-react";
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
 }
 
 export function AddVideoDialog({ subjects }: { subjects: Subject[] }) {
@@ -39,8 +39,9 @@ export function AddVideoDialog({ subjects }: { subjects: Subject[] }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [videoType, setVideoType] = useState("youtube");
   const [subjectId, setSubjectId] = useState("");
-  const [orderIndex, setOrderIndex] = useState("1");
+  const [sortOrder, setSortOrder] = useState("0");
   const [isActive, setIsActive] = useState(true);
   const router = useRouter();
 
@@ -54,8 +55,9 @@ export function AddVideoDialog({ subjects }: { subjects: Subject[] }) {
       title,
       description: description || null,
       video_url: videoUrl,
+      video_type: videoType,
       subject_id: subjectId,
-      order_index: parseInt(orderIndex) || 1,
+      sort_order: parseInt(sortOrder) || 0,
       is_active: isActive,
     });
 
@@ -66,8 +68,9 @@ export function AddVideoDialog({ subjects }: { subjects: Subject[] }) {
       setTitle("");
       setDescription("");
       setVideoUrl("");
+      setVideoType("youtube");
       setSubjectId("");
-      setOrderIndex("1");
+      setSortOrder("0");
       setIsActive(true);
       router.refresh();
     }
@@ -98,7 +101,7 @@ export function AddVideoDialog({ subjects }: { subjects: Subject[] }) {
               <SelectContent>
                 {subjects.map((subject) => (
                   <SelectItem key={subject.id} value={subject.id}>
-                    {subject.name}
+                    {subject.title}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -125,6 +128,19 @@ export function AddVideoDialog({ subjects }: { subjects: Subject[] }) {
             />
           </div>
           <div className="space-y-2">
+            <Label htmlFor="videoType">Video Type</Label>
+            <Select value={videoType} onValueChange={setVideoType} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select video type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="youtube">YouTube</SelectItem>
+                <SelectItem value="uploaded">Uploaded</SelectItem>
+                <SelectItem value="zoom">Zoom</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="videoUrl">Video URL</Label>
             <Input
               id="videoUrl"
@@ -139,14 +155,14 @@ export function AddVideoDialog({ subjects }: { subjects: Subject[] }) {
             </p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="orderIndex">Order</Label>
+            <Label htmlFor="sortOrder">Sort Order</Label>
             <Input
-              id="orderIndex"
+              id="sortOrder"
               type="number"
-              min="1"
-              placeholder="1"
-              value={orderIndex}
-              onChange={(e) => setOrderIndex(e.target.value)}
+              min="0"
+              placeholder="0"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
             />
           </div>
           <div className="flex items-center justify-between">

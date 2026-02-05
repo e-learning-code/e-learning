@@ -39,7 +39,7 @@ interface Quiz {
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
 }
 
 export function EditQuizDialog({
@@ -106,7 +106,7 @@ export function EditQuizDialog({
               <SelectContent>
                 {subjects.map((subject) => (
                   <SelectItem key={subject.id} value={subject.id}>
-                    {subject.name}
+                    {subject.title}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -16,7 +16,7 @@ export default async function StudentPaymentsPage() {
     .from("subjects")
     .select("*")
     .eq("is_active", true)
-    .order("name");
+    .order("title");
 
   // Get student's current access
   const { data: accessibleSubjects } = await supabase
@@ -31,7 +31,7 @@ export default async function StudentPaymentsPage() {
     .from("payments")
     .select(`
       *,
-      subjects:subject_id (name)
+      subjects:subject_id (title)
     `)
     .eq("student_id", user?.id)
     .order("created_at", { ascending: false });
@@ -136,7 +136,7 @@ export default async function StudentPaymentsPage() {
                 {availableSubjects.map((subject) => (
                   <Card key={subject.id}>
                     <CardHeader>
-                      <CardTitle className="text-lg">{subject.name}</CardTitle>
+                      <CardTitle className="text-lg">{subject.title}</CardTitle>
                       {subject.description && (
                         <CardDescription className="line-clamp-2">
                           {subject.description}
@@ -152,7 +152,7 @@ export default async function StudentPaymentsPage() {
                       </div>
                       <PaymentSubmitForm
                         subjectId={subject.id}
-                        subjectName={subject.name}
+                        subjectName={subject.title}
                         amount={subject.fee}
                         studentId={user?.id || ""}
                       />
@@ -180,7 +180,7 @@ export default async function StudentPaymentsPage() {
                   >
                     <div>
                       <p className="font-medium text-foreground">
-                        {payment.subjects?.name || "Unknown Subject"}
+                        {payment.subjects?.title || "Unknown Subject"}
                       </p>
                       <p className="text-sm text-muted-foreground">
                         {new Date(payment.created_at).toLocaleDateString()}

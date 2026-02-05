@@ -22,7 +22,7 @@ import { Loader2 } from "lucide-react";
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
   description: string | null;
   fee: number;
   is_active: boolean;
@@ -38,7 +38,7 @@ export function EditSubjectDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState(subject.name);
+  const [name, setName] = useState(subject.title);
   const [description, setDescription] = useState(subject.description || "");
   const [fee, setFee] = useState(subject.fee.toString());
   const [isActive, setIsActive] = useState(subject.is_active);
@@ -53,7 +53,7 @@ export function EditSubjectDialog({
     const { error } = await supabase
       .from("subjects")
       .update({
-        name,
+        title: name,
         description: description || null,
         fee: parseFloat(fee) || 0,
         is_active: isActive,

@@ -26,7 +26,7 @@ interface Student {
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
 }
 
 export function GrantAccessDialog({
@@ -77,10 +77,15 @@ export function GrantAccessDialog({
       (id) => !existingAccess.includes(id)
     );
     if (toAdd.length > 0) {
+      // Calculate start of next month
+      const now = new Date();
+      const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
       await supabase.from("student_subject_access").insert(
         toAdd.map((subject_id) => ({
           student_id: student.id,
           subject_id,
+          expires_at: nextMonth.toISOString(),
         }))
       );
     }
@@ -120,7 +125,7 @@ export function GrantAccessDialog({
                     htmlFor={subject.id}
                     className="flex-1 cursor-pointer font-normal"
                   >
-                    {subject.name}
+                    {subject.title}
                   </Label>
                 </div>
               ))

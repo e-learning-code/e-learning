@@ -16,7 +16,7 @@ export default async function StudentSubjectsPage() {
     .select(`
       subjects (
         id,
-        name,
+        title,
         description,
         videos (count),
         quizzes (count)
@@ -24,7 +24,7 @@ export default async function StudentSubjectsPage() {
     `)
     .eq("student_id", user?.id);
 
-  const subjects = accessibleSubjects?.map((a) => a.subjects).filter(Boolean) || [];
+  const subjects = accessibleSubjects?.flatMap((a) => a.subjects).filter(Boolean) || [];
 
   return (
     <div className="space-y-8">
@@ -61,7 +61,7 @@ export default async function StudentSubjectsPage() {
                   <div className="p-2 rounded-lg bg-primary/10">
                     <BookMarked className="w-5 h-5 text-primary" />
                   </div>
-                  {subject?.name}
+                  {subject?.title}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

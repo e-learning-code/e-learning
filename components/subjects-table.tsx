@@ -34,7 +34,7 @@ import { EditSubjectDialog } from "./edit-subject-dialog";
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
   description: string | null;
   fee: number;
   is_active: boolean;
@@ -89,7 +89,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
           <TableBody>
             {subjects.map((subject) => (
               <TableRow key={subject.id}>
-                <TableCell className="font-medium">{subject.name}</TableCell>
+                <TableCell className="font-medium">{subject.title}</TableCell>
                 <TableCell className="max-w-[200px] truncate text-muted-foreground">
                   {subject.description || "-"}
                 </TableCell>

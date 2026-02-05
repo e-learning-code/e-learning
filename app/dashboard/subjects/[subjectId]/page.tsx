@@ -82,7 +82,7 @@ export default async function SubjectDetailPage({
           </Link>
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">{subject.name}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{subject.title}</h1>
           {subject.description && (
             <p className="text-muted-foreground mt-1">{subject.description}</p>
           )}

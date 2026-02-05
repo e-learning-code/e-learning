@@ -16,7 +16,7 @@ export default async function StudentDashboardPage() {
     .select(`
       subjects (
         id,
-        name,
+        title,
         description,
         videos (count),
         quizzes (count)
@@ -35,7 +35,15 @@ export default async function StudentDashboardPage() {
     .order("created_at", { ascending: false })
     .limit(5);
 
-  const subjects = accessibleSubjects?.map((a) => a.subjects).flat().filter(Boolean) || [];
+  interface SubjectWithCounts {
+    id: string;
+    title: string;
+    description: string | null;
+    videos: { count: number }[];
+    quizzes: { count: number }[];
+  }
+  const subjects: SubjectWithCounts[] =
+    accessibleSubjects?.flatMap((a) => (a.subjects || [])) || [];
   const totalVideos = subjects.reduce(
     (acc, s) => acc + (s?.videos?.[0]?.count || 0),
     0
@@ -137,7 +145,7 @@ export default async function StudentDashboardPage() {
                   >
                     <div>
                       <p className="font-medium text-foreground">
-                        {subject?.name}
+                        {subject?.title}
                       </p>
                       <p className="text-sm text-muted-foreground">
                         {subject?.videos?.[0]?.count || 0} videos,{" "}

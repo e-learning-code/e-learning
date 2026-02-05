@@ -33,13 +33,13 @@ interface Student {
   created_at: string;
   student_subject_access: {
     subject_id: string;
-    subjects: { name: string } | null;
+    subjects: { title: string } | null;
   }[];
 }
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
 }
 
 export function StudentsTable({
@@ -108,7 +108,7 @@ export function StudentsTable({
                     {student.student_subject_access?.length > 0 ? (
                       student.student_subject_access.slice(0, 3).map((access, i) => (
                         <Badge key={i} variant="secondary" className="text-xs">
-                          {access.subjects?.name || "Unknown"}
+                          {access.subjects?.title || "Unknown"}
                         </Badge>
                       ))
                     ) : (

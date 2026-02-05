@@ -29,7 +29,15 @@ const navItems = [
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarContentProps {
+  className?: string;
+  onLinkClick?: () => void;
+}
+
+export function AdminSidebarContent({
+  className,
+  onLinkClick,
+}: AdminSidebarContentProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -37,12 +45,22 @@ export function AdminSidebar() {
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/");
+    if (onLinkClick) onLinkClick();
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
+    <div
+      className={cn(
+        "flex flex-col h-full bg-sidebar border-r border-sidebar-border",
+        className
+      )}
+    >
       <div className="p-6 border-b border-sidebar-border">
-        <Link href="/admin" className="flex items-center gap-2">
+        <Link
+          href="/admin"
+          className="flex items-center gap-2"
+          onClick={onLinkClick}
+        >
           <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-sidebar-primary">
             <BookOpen className="w-5 h-5 text-sidebar-primary-foreground" />
           </div>
@@ -65,6 +83,7 @@ export function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onLinkClick}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                 isActive
@@ -89,6 +108,14 @@ export function AdminSidebar() {
           Sign out
         </Button>
       </div>
+    </div>
+  );
+}
+
+export function AdminSidebar() {
+  return (
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border hidden md:flex flex-col z-30">
+      <AdminSidebarContent />
     </aside>
   );
 }

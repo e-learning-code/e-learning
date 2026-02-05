@@ -9,15 +9,15 @@ export default async function VideosPage() {
     .from("videos")
     .select(`
       *,
-      subjects:subject_id (name)
+      subjects:subject_id (title)
     `)
     .order("created_at", { ascending: false });
 
   const { data: subjects } = await supabase
     .from("subjects")
-    .select("id, name")
+    .select("id, title")
     .eq("is_active", true)
-    .order("name");
+    .order("title");
 
   return (
     <div className="space-y-8">

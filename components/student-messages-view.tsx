@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Send, Loader2, MessageCircle } from "lucide-react";
+import { Send, Loader2, MessageCircle, Trash2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -40,6 +40,7 @@ export function StudentMessagesView({
 }) {
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const router = useRouter();
 
   // For simplicity, send to first admin or general (no specific receiver)
@@ -64,21 +65,59 @@ export function StudentMessagesView({
     router.refresh();
   }
 
+  async function handleClearChat() {
+    if (!confirm("Are you sure you want to clear all messages? This action cannot be undone.")) {
+      return;
+    }
+
+    setClearing(true);
+    const supabase = createClient();
+
+    // Delete all messages where student is sender or receiver
+    await supabase
+      .from("messages")
+      .delete()
+      .or(`sender_id.eq.${studentId},receiver_id.eq.${studentId}`);
+
+    setClearing(false);
+    router.refresh();
+  }
+
   return (
     <Card className="h-[calc(100vh-240px)] flex flex-col">
       <div className="p-4 border-b border-border">
-        <div className="flex items-center gap-3">
-          <Avatar className="w-10 h-10">
-            <AvatarFallback className="bg-primary/10 text-primary">
-              A
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="font-medium text-foreground">Admin Support</p>
-            <p className="text-sm text-muted-foreground">
-              Send us a message and we&apos;ll respond as soon as possible
-            </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Avatar className="w-10 h-10">
+              <AvatarFallback className="bg-primary/10 text-primary">
+                A
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-medium text-foreground">Admin Support</p>
+              <p className="text-sm text-muted-foreground">
+                Send us a message and we&apos;ll respond as soon as possible
+              </p>
+            </div>
           </div>
+          {messages.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClearChat}
+              disabled={clearing}
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              {clearing ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Clear Chat
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -101,19 +140,17 @@ export function StudentMessagesView({
                   className={`flex ${isStudent ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[70%] rounded-lg px-4 py-2 ${
-                      isStudent
+                    className={`max-w-[70%] rounded-lg px-4 py-2 ${isStudent
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-foreground"
-                    }`}
+                      }`}
                   >
                     <p>{message.content}</p>
                     <p
-                      className={`text-xs mt-1 ${
-                        isStudent
+                      className={`text-xs mt-1 ${isStudent
                           ? "text-primary-foreground/70"
                           : "text-muted-foreground"
-                      }`}
+                        }`}
                     >
                       {new Date(message.created_at).toLocaleTimeString([], {
                         hour: "2-digit",

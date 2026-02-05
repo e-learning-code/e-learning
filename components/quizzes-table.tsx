@@ -43,13 +43,13 @@ interface Quiz {
   passing_score: number;
   is_active: boolean;
   created_at: string;
-  subjects: { name: string } | null;
+  subjects: { title: string } | null;
   quiz_questions: { count: number }[];
 }
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
 }
 
 export function QuizzesTable({
@@ -116,7 +116,7 @@ export function QuizzesTable({
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">
-                    {quiz.subjects?.name || "Unknown"}
+                    {quiz.subjects?.title || "Unknown"}
                   </Badge>
                 </TableCell>
                 <TableCell>{quiz.quiz_questions?.[0]?.count || 0}</TableCell>

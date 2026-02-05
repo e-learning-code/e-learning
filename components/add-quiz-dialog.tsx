@@ -30,7 +30,7 @@ import { Plus, Loader2 } from "lucide-react";
 
 interface Subject {
   id: string;
-  name: string;
+  title: string;
 }
 
 export function AddQuizDialog({ subjects }: { subjects: Subject[] }) {
@@ -99,7 +99,7 @@ export function AddQuizDialog({ subjects }: { subjects: Subject[] }) {
               <SelectContent>
                 {subjects.map((subject) => (
                   <SelectItem key={subject.id} value={subject.id}>
-                    {subject.name}
+                    {subject.title}
                   </SelectItem>
                 ))}
               </SelectContent>

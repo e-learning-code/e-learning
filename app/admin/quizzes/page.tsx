@@ -9,16 +9,16 @@ export default async function QuizzesPage() {
     .from("quizzes")
     .select(`
       *,
-      subjects:subject_id (name),
+      subjects:subject_id (title),
       quiz_questions (count)
     `)
     .order("created_at", { ascending: false });
 
   const { data: subjects } = await supabase
     .from("subjects")
-    .select("id, name")
+    .select("id, title")
     .eq("is_active", true)
-    .order("name");
+    .order("title");
 
   return (
     <div className="space-y-8">
