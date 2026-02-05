@@ -18,7 +18,7 @@ function getEmbedUrl(url: string): string | null {
     /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/
   );
   if (youtubeMatch) {
-    return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}?rel=0&modestbranding=1`;
   }
 
   // Vimeo
@@ -83,8 +83,10 @@ export function VideoPlayer({ video, index }: { video: Video; index: number }) {
                 <iframe
                   src={embedUrl}
                   title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                   className="absolute inset-0 w-full h-full"
                 />
               </div>

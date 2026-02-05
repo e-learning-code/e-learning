@@ -47,7 +47,7 @@ export default async function SubjectDetailPage({
     .select("*")
     .eq("subject_id", subjectId)
     .eq("is_active", true)
-    .order("order_index");
+    .order("sort_order");
 
   // Get quizzes
   const { data: quizzes } = await supabase
