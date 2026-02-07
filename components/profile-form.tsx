@@ -14,7 +14,6 @@ import { Loader2, Save } from "lucide-react";
 interface Profile {
   id: string;
   full_name: string | null;
-  phone: string | null;
 }
 
 export function ProfileForm({
@@ -26,7 +25,6 @@ export function ProfileForm({
 }) {
   const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState(profile?.full_name || "");
-  const [phone, setPhone] = useState(profile?.phone || "");
   const [saved, setSaved] = useState(false);
   const router = useRouter();
 
@@ -41,7 +39,6 @@ export function ProfileForm({
       .from("profiles")
       .update({
         full_name: fullName || null,
-        phone: phone || null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", profile?.id);
@@ -83,15 +80,6 @@ export function ProfileForm({
               placeholder="Enter your full name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              placeholder="Enter your phone number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
             />
           </div>
           <div className="flex items-center gap-4">

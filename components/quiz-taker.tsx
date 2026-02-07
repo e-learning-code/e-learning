@@ -216,6 +216,83 @@ export function QuizTaker({
           </CardContent>
         </Card>
 
+        {/* Answers Review */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Review Your Answers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {questions.map((question, index) => {
+                const userAnswerIndex = answers[question.id];
+                const userAnswer = userAnswerIndex !== undefined ? String.fromCharCode(65 + userAnswerIndex) : null;
+                const isCorrect = userAnswer === question.correct_answer;
+                
+                return (
+                  <div key={question.id} className={`p-4 rounded-lg border ${
+                    isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'
+                  }`}>
+                    <div className="flex items-start gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                        isCorrect ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium mb-3">{question.question_text}</p>
+                        <div className="space-y-2">
+                          {[
+                            { option: question.option_a, label: 'A' },
+                            { option: question.option_b, label: 'B' },
+                            { option: question.option_c, label: 'C' },
+                            { option: question.option_d, label: 'D' }
+                          ].map((item) => {
+                            const isUserAnswer = userAnswer === item.label;
+                            const isCorrectAnswer = question.correct_answer === item.label;
+                            
+                            return (
+                              <div key={item.label} className={`p-3 rounded-lg border-2 ${
+                                isCorrectAnswer
+                                  ? 'border-green-500 bg-green-100'
+                                  : isUserAnswer
+                                  ? 'border-red-500 bg-red-100'
+                                  : 'border-gray-200 bg-gray-50'
+                              }`}>
+                                <div className="flex items-center gap-2">
+                                  <span className={`font-medium ${
+                                    isCorrectAnswer
+                                      ? 'text-green-700'
+                                      : isUserAnswer
+                                      ? 'text-red-700'
+                                      : 'text-gray-600'
+                                  }`}>
+                                    {item.label}.
+                                  </span>
+                                  <span>{item.option}</span>
+                                  {isCorrectAnswer && (
+                                    <span className="ml-auto text-green-600 font-medium text-sm">
+                                      ✓ Correct
+                                    </span>
+                                  )}
+                                  {isUserAnswer && !isCorrectAnswer && (
+                                    <span className="ml-auto text-red-600 font-medium text-sm">
+                                      ✗ Your Answer
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
         <AttemptHistory 
           quizId={quiz.id} 
           studentId={studentId} 

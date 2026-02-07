@@ -32,7 +32,8 @@ export default async function StudentDashboardPage() {
       quizzes (title, passing_score)
     `)
     .eq("student_id", user?.id)
-    .order("created_at", { ascending: false })
+    .eq("status", "submitted")
+    .order("submitted_at", { ascending: false })
     .limit(5);
 
   interface SubjectWithCounts {
@@ -194,7 +195,7 @@ export default async function StudentDashboardPage() {
                         </p>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Clock className="w-3 h-3" />
-                          {new Date(attempt.created_at).toLocaleDateString()}
+                          {new Date(attempt.submitted_at).toLocaleDateString()}
                         </div>
                       </div>
                       <div className="text-right">
