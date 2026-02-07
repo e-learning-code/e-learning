@@ -51,8 +51,9 @@ interface QuizAttempt {
   passed: boolean;
   answers: Record<string, number>;
   time_taken_seconds: number;
-  attempt_number: number;
+  status: string;
   submitted_at: string;
+  started_at: string;
   quizzes: {
     id: string;
     title: string;
@@ -143,7 +144,7 @@ export function QuizResultsManager({
   }
 
   function exportToCSV() {
-    const headers = ["Student", "Email", "Quiz", "Subject", "Score", "Result", "Attempt", "Time", "Date"];
+    const headers = ["Student", "Email", "Quiz", "Subject", "Score", "Result", "Time", "Date"];
     const rows = filteredAttempts.map(attempt => [
       attempt.students.full_name || "N/A",
       attempt.students.email,
@@ -151,7 +152,6 @@ export function QuizResultsManager({
       attempt.quizzes.subjects?.name || "N/A",
       `${attempt.score}%`,
       attempt.passed ? "Passed" : "Failed",
-      `#${attempt.attempt_number}`,
       formatTime(attempt.time_taken_seconds),
       formatDate(attempt.submitted_at)
     ]);
@@ -311,7 +311,6 @@ export function QuizResultsManager({
                   <TableHead>Quiz</TableHead>
                   <TableHead>Score</TableHead>
                   <TableHead>Result</TableHead>
-                  <TableHead>Attempt</TableHead>
                   <TableHead>Time</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Actions</TableHead>
@@ -320,7 +319,7 @@ export function QuizResultsManager({
               <TableBody>
                 {filteredAttempts.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       No results found matching your criteria.
                     </TableCell>
                   </TableRow>
@@ -354,9 +353,6 @@ export function QuizResultsManager({
                         <Badge variant={attempt.passed ? "default" : "destructive"}>
                           {attempt.passed ? "Passed" : "Failed"}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">#{attempt.attempt_number}</Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
@@ -411,12 +407,8 @@ export function QuizResultsManager({
                                     </Badge>
                                   </div>
                                   <div>
-                                    <Label>Attempt</Label>
-                                    <p className="font-medium">#{selectedAttempt.attempt_number}</p>
-                                  </div>
-                                  <div>
-                                    <Label>Time Taken</Label>
-                                    <p className="font-medium">{formatTime(selectedAttempt.time_taken_seconds)}</p>
+                                    <Label>Status</Label>
+                                    <p className="font-medium">Submitted</p>
                                   </div>
                                 </div>
                                 <div>

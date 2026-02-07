@@ -11,6 +11,7 @@ export default async function QuizResultsPage() {
       quizzes:quiz_id (id, title, subjects:subject_id (name)),
       students:student_id (id, email, full_name)
     `)
+    .eq("status", "submitted")
     .order("submitted_at", { ascending: false });
 
   return (

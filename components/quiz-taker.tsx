@@ -93,7 +93,7 @@ export function QuizTaker({
     
     const attemptNumber = (previousAttempts?.length || 0) + 1;
     
-    await supabase.from("quiz_attempts").insert({
+    const { error: insertError } = await supabase.from("quiz_attempts").insert({
       quiz_id: quiz.id,
       student_id: studentId,
       score,
@@ -101,8 +101,14 @@ export function QuizTaker({
       passed,
       answers,
       time_taken_seconds: quiz.time_limit_minutes * 60 - timeLeft,
-      attempt_number: attemptNumber,
+      status: 'submitted',
+      submitted_at: new Date().toISOString(),
     });
+
+    if (insertError) {
+      console.error("Error saving quiz attempt:", insertError);
+      // You might want to show an error message to the user here
+    }
 
     setResult({ score, passed, attemptNumber });
     setSubmitting(false);

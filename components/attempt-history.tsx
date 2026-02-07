@@ -10,9 +10,9 @@ interface Attempt {
   id: string;
   score: number;
   passed: boolean;
-  attempt_number: number;
   time_taken_seconds: number;
   submitted_at: string;
+  started_at: string;
 }
 
 interface AttemptHistoryProps {
@@ -87,9 +87,10 @@ export function AttemptHistory({ quizId, studentId, currentAttempt }: AttemptHis
       <CardContent>
         <div className="space-y-3">
           {attempts.map((attempt, index) => {
-            const isCurrentAttempt = attempt.attempt_number === currentAttempt;
+            const isCurrentAttempt = index === 0; // Most recent attempt
             const previousAttempt = attempts[index + 1];
             const trend = getScoreTrend(attempt.score, previousAttempt?.score);
+            const attemptNumber = attempts.length - index;
 
             return (
               <div
@@ -103,7 +104,7 @@ export function AttemptHistory({ quizId, studentId, currentAttempt }: AttemptHis
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <Badge variant={isCurrentAttempt ? "default" : "secondary"}>
-                      Attempt #{attempt.attempt_number}
+                      Attempt {attemptNumber}
                     </Badge>
                     {isCurrentAttempt && (
                       <Badge variant="outline" className="text-xs">
