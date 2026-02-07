@@ -28,6 +28,7 @@ interface Student {
   full_name: string | null;
   email: string;
   phone: string | null;
+  grade: string | null;
   is_active: boolean;
   is_approved: boolean;
   created_at: string;
@@ -85,8 +86,8 @@ export function StudentsTable({
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
+              <TableHead>Grade</TableHead>
               <TableHead>Subjects</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Joined</TableHead>
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
@@ -102,6 +103,15 @@ export function StudentsTable({
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {student.phone || "-"}
+                </TableCell>
+                <TableCell>
+                  {student.grade ? (
+                    <Badge variant="outline" className="text-xs">
+                      Grade {student.grade}
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground text-sm">-</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-wrap gap-1">
@@ -121,22 +131,6 @@ export function StudentsTable({
                     )}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <span
-                    className={`px-2 py-1 text-xs rounded-full ${!student.is_approved
-                      ? "bg-yellow-100 text-yellow-700"
-                      : student.is_active
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                      }`}
-                  >
-                    {!student.is_approved
-                      ? "Pending"
-                      : student.is_active
-                        ? "Active"
-                        : "Blocked"}
-                  </span>
-                </TableCell>
                 <TableCell className="text-muted-foreground">
                   {new Date(student.created_at).toLocaleDateString()}
                 </TableCell>
@@ -153,28 +147,6 @@ export function StudentsTable({
                       >
                         <BookPlus className="w-4 h-4 mr-2" />
                         Grant Subject Access
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() =>
-                          toggleStudentStatus(student.id, student.is_active)
-                        }
-                      >
-                        {!student.is_approved ? (
-                          <>
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Approve Student
-                          </>
-                        ) : student.is_active ? (
-                          <>
-                            <Ban className="w-4 h-4 mr-2" />
-                            Block Student
-                          </>
-                        ) : (
-                          <>
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Unblock Student
-                          </>
-                        )}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
